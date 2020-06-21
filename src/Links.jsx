@@ -8,6 +8,7 @@ import { emphasize, withStyles } from '@material-ui/core/styles';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Chip from '@material-ui/core/Chip';
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined'
+import Avatar from '@material-ui/core/Avatar';
 
 const Links =()=>{
   const useStyles = makeStyles((theme) => ({
@@ -16,6 +17,10 @@ const Links =()=>{
     },
     menuButton: {
       marginRight: theme.spacing(2),
+    },
+    large: {
+      width: theme.spacing(7),
+      height: theme.spacing(7),
     },
   }));
   const classes = useStyles();
@@ -41,6 +46,7 @@ return(
         <Toolbar variant="dense">
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
          <Breadcrumbs aria-label="breadcrumb">
+         <Avatar alt="Remy Sharp" src="/home/alberto/Documents/Newproyect/public/logo192.png" className={classes.large} />
       <StyledBreadcrumb component="a" href="/"label="Home" icon={<HomeOutlinedIcon fontSize="small" />}/>
       <StyledBreadcrumb component="a" href="/Abaut" label="Abaut" />
       <StyledBreadcrumb  component="a" href="/NewPage" label="NewPage"/>  
