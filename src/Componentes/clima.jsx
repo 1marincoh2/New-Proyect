@@ -60,7 +60,7 @@ getTiempo()
   const[listsday, setListsday]=useState([])
 
   const nextday=(dia)=>{
-     axios.get("http://api.openweathermap.org/data/2.5/forecast?id="+dia+"&cnt=5&appid=69d3cf86b46f19cf3e049339355533aa").then((response)=>{
+     axios.get("https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/forecast?id="+dia+"&cnt=5&appid=69d3cf86b46f19cf3e049339355533aa").then((response)=>{
           console.log(response.data)            
           setListsday(prevState=>{
             let day=[... prevState]
@@ -77,7 +77,7 @@ getTiempo()
   const getTiempo = () => {
 
 
-    axios.get('http://api.openweathermap.org/data/2.5/weather?lat=20.66&lon=-87.07&APPID=69d3cf86b46f19cf3e049339355533aa').then((response) => {
+    axios.get('https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/weather?lat=20.66&lon=-87.07&APPID=69d3cf86b46f19cf3e049339355533aa').then((response) => {
       console.log(response.data)
       nextday(response.data.id)
       setTiempo(prevState => {
