@@ -1,39 +1,26 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-
-import Typography from '@material-ui/core/Typography';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import Divider from '@material-ui/core/Divider';
 
 const clima = () => {
 
   const useStyles = makeStyles((theme) => ({
+   
     root: {
-      '& > *': {
-        margin: theme.spacing(1),
-      },
+      width: '100%',
+      maxWidth: 360,
+      backgroundColor: theme.palette.background.paper,
     },
-    root1: {
-      minWidth: 275,
-    },
-    bullet: {
-      display: 'inline-block',
-      margin: '0 2px',
-      transform: 'scale(0.8)',
-    },
-    title: {
-      fontSize: 14,
-    },
-    pos: {
-      marginBottom: 12,
-    },
+   
   }));
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [tiempo, setTiempo] = useState({
     coord: { lon: 0, lat: 0 },
@@ -52,48 +39,46 @@ const clima = () => {
   });
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  useEffect(()=>{
-getTiempo()
+  useEffect(() => {
+    getTiempo()
 
-  },[])
+  }, [])
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const[listsday, setListsday]=useState([])
+  const [listsday, setListsday] = useState([])
 
-  const nextday=(dia)=>{
-     axios.get("https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/forecast?id="+dia+"&cnt=5&appid=69d3cf86b46f19cf3e049339355533aa").then((response)=>{
-          console.log(response.data)            
-          setListsday(prevState=>{
-            let day=[... prevState]
-            day=response.data.list
-            return day;
-          }) 
-     })
+  const nextday = (dia) => {
+    axios.get("https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/forecast?id=" + dia + "&cnt=5&appid=69d3cf86b46f19cf3e049339355533aa").then((response) => {
+      console.log(response.data)
+      setListsday(prevState => {
+        let day = [...prevState]
+        day = response.data.list
+        return day;
+      })
+    })
 
 
   }
 
-
+  const hora = (dt) => {
+    const date = new Date(dt * 1000).toDateString()
+    return date
+  }
 
   const getTiempo = () => {
 
 
-    axios.get('https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/weather?lat=20.66&lon=-87.07&APPID=69d3cf86b46f19cf3e049339355533aa').then((response) => {
+    axios.get('https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/weather?lat=21.17429&lon=-86.84656&APPID=69d3cf86b46f19cf3e049339355533aa').then((response) => {
       console.log(response.data)
       nextday(response.data.id)
       setTiempo(prevState => {
         const humedad = { ...prevState }
         humedad.coord = response.data.coord
         humedad.weather = response.data.weather
-        humedad.base = response.data.base
-        humedad.main=response.data.main
-        humedad.visibility=response.data.visibility
-        humedad.wind=response.data.wind
-        humedad.clouds=response.data.clouds
-        humedad.dt=response.data.dt
-        humedad.sys=response.data.sys
-        humedad.timezone=response.data.timezone
-        humedad.id=response.data.name
-        humedad.cod=response.data.cod
+        humedad.main = response.data.main
+        humedad.dt = response.data.dt
+        humedad.sys = response.data.sys
+        humedad.name = response.data.name
+
         return humedad
 
       })
@@ -109,66 +94,44 @@ getTiempo()
     <div>
 
       <React.Fragment>
-        <Card className={classes.root1}>
+              
+ <List className={classes.root}>
+ {tiempo.weather.map((agua) => (  
+ <ListItem>
+     <ListItemAvatar>
+     <Avatar>
+     <img src={"http://openweathermap.org/img/wn/" + agua.icon + "@2x.png"} alt="" />
+     </Avatar>
+   </ListItemAvatar>
+   <ListItemText >  {tiempo.name},{tiempo.sys.country}<br/>{hora(tiempo.dt)}<br/>Min:{tiempo.main.temp_min}<br/> Max:{tiempo.main.temp_max}<br/>Humedad:{tiempo.main.humidity}</ListItemText>
+ </ListItem>
+))}
 
-          {JSON.stringify(tiempo.coord)}
-          <CardContent>
-            <Typography className={classes.title} color="textSecondary" gutterBottom>
+ {listsday.map((days) => (
+  <div>
+    <Divider variant="inset" component="li" />
+<ListItem>
+        <ListItemAvatar>
+       <Avatar>
+       {days.weather.map((agua) => (
+         
+     <img src={"http://openweathermap.org/img/wn/" + agua.icon + "@2x.png"} alt="" />
+     ))}
+     </Avatar>
+   </ListItemAvatar>
+   <ListItemText>  {hora(days.dt)}  Min:{days.main.temp_min}, Max:{days.main.temp_max},Humedad:{days.main.humidity}</ListItemText>
+ </ListItem>
+ </div>
+ ))}
 
-            Longitud:{tiempo.coord.lon} {bull} Latitud:{tiempo.coord.lat}
-            </Typography>
+ </List>
+ </React.Fragment>
+ </div>
 
-            {tiempo.weather.map((agua) => (
-              <Typography variant="h5" component="h2" key={agua.id}>
-                {agua.id}{bull}{agua.main}{bull}{agua.description}{bull}
-                <img src={"http://openweathermap.org/img/wn/"+agua.icon+"@2x.png"} alt=""/>
-              </Typography>
-            ))
-
-            }
-            <Typography className={classes.pos} color="textSecondary">
-              {tiempo.base}
-              <br />
-              {tiempo.main.temp}{bull}{tiempo.main.feels_like}{bull}{tiempo.main.temp_min }{bull}{tiempo.main.temp_max}{bull}{tiempo.main.pressure}
-              {bull}{tiempo.main.humidity}
-              </Typography> 
-            <Typography variant="body2" component="p">
-            {tiempo.visibility} {tiempo.wind.speed} {tiempo.wind.deg}{tiempo.clouds.all}{tiempo.dt}{tiempo.sys.type}{tiempo.sys.id}{tiempo.sys.country}{tiempo.sunrise}{tiempo.sunset}
-                  <br />
-                 Hora loca:{tiempo.timezone}{tiempo.id}{tiempo.name}{tiempo.code}
-             
-            </Typography> 
-            {listsday.map((days) => (
-            <Typography variant="body2" component="p">
-             {days.weather.map((agua) => (
-              <Typography variant="h5" component="h2" key={agua.id}>
-                {agua.id}{bull}{agua.main}{bull}{agua.description}{bull}
-                <img src={"http://openweathermap.org/img/wn/"+agua.icon+"@2x.png"} alt=""/>
-              </Typography>
-            ))}
-            </Typography> 
-            )) }
-          </CardContent>
-
-
-          <CardActions>
-            <Button className={classes.root} color="secondary" onClick={() => {
-              getTiempo()
-            }}>
-              clima
-      </Button>
-          </CardActions>
-        </Card>
-
-      </React.Fragment>
-    </div>
 
 
 
   )
-
-
-
 
 }
 export default clima
